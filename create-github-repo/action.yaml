@@ -1,0 +1,35 @@
+schema-version: v1
+kind: action
+metadata:
+  name: create-github-repo
+  display-name: create-github-repo
+  description: Action to create a GitHub repository
+  version: 0.0.1
+spec:
+  type: python
+  about: docs/about.md
+  usage: docs/usage.md
+  release-notes: docs/release-notes.md
+  requirements: docs/requirements.md
+  implementation: docs/implementation.md
+  inputs:
+    - label: GitHub Token
+      name: stk_github_token
+      type: password
+      required: true
+      help: 'Inform a GitHub token or PAT'
+    - label: New repository name
+      name: stk_github_repository
+      type: text
+      required: true
+      help: 'Inform if you the repository name you want to create'
+    - label: Is it a private repo?
+      name: stk_github_private
+      type: text
+      items:
+        - 'Yes'
+        - 'No'
+      help: 'Inform if you want the repository to be public or private'
+  python:
+    workdir: .
+    script: script.py

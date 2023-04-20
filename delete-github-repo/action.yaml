@@ -1,0 +1,27 @@
+schema-version: v1
+kind: action
+metadata:
+  name: delete-github-repo
+  display-name: delete-github-repo
+  description: Action to delete a GitHub repository
+  version: 0.0.1
+spec:
+  type: python
+  about: docs/about.md
+  usage: docs/usage.md
+  release-notes: docs/release-notes.md
+  requirements: docs/requirements.md
+  implementation: docs/implementation.md
+  inputs:
+    - label: GitHub Token
+      name: stk_github_token
+      type: password
+      required: true
+      help: 'Inform a GitHub token or PAT'
+    - label: Repository Name
+      name: stk_github_repository
+      type: text
+      help: 'The github repository name to delete'
+  python:
+    workdir: .
+    script: script.py
