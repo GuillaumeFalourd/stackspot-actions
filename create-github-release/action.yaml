@@ -1,0 +1,38 @@
+schema-version: v1
+kind: action
+metadata:
+  name: create-github-release
+  display-name: create-github-release
+  description: Action to create a GitHub repository release
+  version: 0.0.1
+spec:
+  type: python
+  about: docs/about.md
+  usage: docs/usage.md
+  release-notes: docs/release-notes.md
+  requirements: docs/requirements.md
+  implementation: docs/implementation.md
+  inputs:
+  - label: GitHub Token
+    type: password
+    name: stk_github_token
+    required: true
+  - label: Repository
+    type: text
+    name: stk_github_repository
+    required: true
+  - label: Release branch reference
+    type: text
+    name: stk_github_branch
+    required: true
+  - label: Release tag version
+    type: text
+    name: stk_github_version
+    required: true
+  - label: Release Description
+    type: text
+    name: stk_github_description
+    required: true
+  python:
+    workdir: .
+    script: script.py
