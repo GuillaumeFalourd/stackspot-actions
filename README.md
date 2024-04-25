@@ -4,7 +4,7 @@ Repository with StackSpot actions
 
 ## Actions
 
-## Ready
+### Ready
 
 `stk run action create-github-repo`: Action to create a GitHub repository
 
@@ -17,3 +17,9 @@ Repository with StackSpot actions
 ### On Going
 
 `stk run action create-github-secret`: Action to create a GitHub repository secret
+
+## Example
+
+When running the `stk run action vulnerability-check` locally, it's possible to check all files vulnerabilities in the current and sub-directories.
+
+<img width="1003" alt="Screenshot 2024-04-25 at 09 25 27" src="https://github.com/GuillaumeFalourd/stackspot-actions/assets/22433243/9815cfd6-272f-4589-ba68-7cfa1b726593">
