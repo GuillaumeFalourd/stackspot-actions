@@ -1,0 +1,23 @@
+schema-version: v2
+kind: action
+metadata:
+  name: owasp-check
+  display-name: owasp-check
+  description: Action calling RQC to check OWASP top 10
+  version: 0.0.1
+spec:
+  type: python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  repository: https://github.com/GuillaumeFalourd/stackspot-actions
+  inputs:
+    - label: What is your name?
+      name: user_name
+      type: text
+      required: false
+      pattern: '^[A-Za-z]+(?:\s[A-Za-z]+)*$'
+      help: 'Inform your name'
+  python:
+    workdir: .
+    script: script.py
