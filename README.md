@@ -17,3 +17,5 @@ Repository with StackSpot actions
 ### On Going
 
 `stk run action create-github-secret`: Action to create a GitHub repository secret
+
+`stk run action owasp-check`: Action using StackSpot AI remote quick command to check files vulnerabilities focussing on OWASP top 10. 
