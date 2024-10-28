@@ -1,3 +1,5 @@
+[![Vulnerability Check](https://github.com/GuillaumeFalourd/stackspot-actions/actions/workflows/vulnerability-check.yaml/badge.svg)](https://github.com/GuillaumeFalourd/stackspot-actions/actions/workflows/vulnerability-check.yaml)
+
 # stackspot-actions
 
 Repository with StackSpot actions
