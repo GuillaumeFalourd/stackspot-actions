@@ -57,3 +57,4 @@ jobs:
             committer: stackspot[bot] <stackspot[bot]@users.noreply.github.com>
             title: "Update Docker base image to fix vulnerabilities"
             body: "This PR updates the Docker base image to address vulnerabilities using StackSpot."
+            base: main
