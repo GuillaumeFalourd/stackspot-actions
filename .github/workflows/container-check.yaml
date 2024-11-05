@@ -52,3 +52,5 @@ jobs:
         - name: Create Pull Request
           run: |
             gh pr create --base main --head ${{ steps.commit_push.outputs.BRANCH }} --title "Fix Dockerfile vulnerabilities" --body "An automated PR which updates Docker base images to address vulnerabilities using StackSpot."
+          env:
+            GH_TOKEN: ${{ github.token }}
