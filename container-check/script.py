@@ -122,7 +122,6 @@ def run(metadata):
 
             # Step 3: Check if the result contains a new Dockerfile content
             new_dockerfile_content = result_data.get('dockerfile', {}).get('dockerfile')
-            print('new_dockerfile_content:', new_dockerfile_content)
 
             if new_dockerfile_content:
                 # Step 4: Update the Dockerfile with the new content
