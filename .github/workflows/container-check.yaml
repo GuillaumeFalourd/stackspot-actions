@@ -1,0 +1,55 @@
+name: Container Check
+
+on:
+  push:
+  schedule:
+    - cron: "0 1 * * MON-FRI" # Runs at 01:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: write-all
+
+jobs:
+  container-check:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4
+        - uses: stack-spot/stk-cli-action@v1.2
+          with:
+            client_id: ${{ secrets.STK_CLIENT_ID }}
+            client_key: ${{ secrets.STK_CLIENT_KEY }}
+            realm: stackspot    
+        - run: stk run action $GITHUB_WORKSPACE/container-check --stk_client_id '${{secrets.STK_CLIENT_ID}}' --stk_client_key '${{secrets.STK_CLIENT_KEY}}'
+          env:
+            FEATURES_LEVEL_LOG: debug
+
+        - name: Commit and push changes
+          id: commit_push
+          run: |
+            # Get the repository name from the GitHub context
+            repo_name=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)
+            # Generate a timestamp in the format YYYYMMDD-HHMMSS
+            timestamp=$(date +'%Y%m%d-%H%M%S')
+            # Create the branch name
+            BRANCH="stackspot-${repo_name}-${timestamp}"
+            echo "BRANCH=$BRANCH" >> $GITHUB_OUTPUT
+
+            git config --global user.name "stackspot[bot]"
+            git config --global user.email "stackspot[bot]@users.noreply.github.com"
+            git checkout -b $BRANCH
+            git add Dockerfile
+            git commit -m "Update Dockerfile base image to fix vulnerabilities"
+            git push origin $BRANCH
+          shell: bash
+
+        - name: Create Pull Request
+          uses: peter-evans/create-pull-request@v7
+          with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+            branch: ${{ steps.commit_push.outputs.BRANCH }}
+            title: "Update Docker base image to fix vulnerabilities"
+            body: "This PR updates the Docker base image to address vulnerabilities using StackSpot."
+            base: main
