@@ -55,7 +55,5 @@ jobs:
             token: ${{ secrets.GITHUB_TOKEN }}
             branch: ${{ steps.commit_push.outputs.BRANCH }}
             committer: stackspot[bot] <stackspot[bot]@users.noreply.github.com>
-            author: ${{ github.actor }}
             title: "Update Docker base image to fix vulnerabilities"
             body: "This PR updates the Docker base image to address vulnerabilities using StackSpot."
-            base: main
