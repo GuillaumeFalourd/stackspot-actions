@@ -10,13 +10,17 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions: write-all
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   container-check:
     runs-on: ubuntu-latest
     steps:
-        - uses: actions/checkout@v4
+        - uses: actions/checkout@v42.1
+          with:  
+            fetch-depth: 0
         - uses: stack-spot/stk-cli-action@v1.2
           with:
             client_id: ${{ secrets.STK_CLIENT_ID }}
@@ -41,7 +45,7 @@ jobs:
             git config --global user.email "stackspot[bot]@users.noreply.github.com"
             git checkout -b $BRANCH
             git add Dockerfile
-            git commit -m "Update Dockerfile base image to fix vulnerabilities"
+            git commit -m "Update Dockerfile base image to fix vulnerabilities using StackSpot."
             git push origin $BRANCH
           shell: bash
 
@@ -50,6 +54,8 @@ jobs:
           with:
             token: ${{ secrets.GITHUB_TOKEN }}
             branch: ${{ steps.commit_push.outputs.BRANCH }}
+            committer: stackspot[bot] <stackspot[bot]@users.noreply.github.com>
+            author: ${{ github.actor }}
             title: "Update Docker base image to fix vulnerabilities"
             body: "This PR updates the Docker base image to address vulnerabilities using StackSpot."
             base: main

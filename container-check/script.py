@@ -54,7 +54,6 @@ def create_rqc_execution(qc_slug, access_token, input_data):
         decoded_content = response.content.decode('utf-8')  # Decode bytes to string
         extracted_value = decoded_content.strip('"')  # Strip the surrounding quotes
         response_data = extracted_value
-        print('ExecutionID:', response_data)
         return response_data
     else:
         print(response.status_code)
@@ -115,8 +114,6 @@ def run(metadata):
             access_token = get_access_token(ACCOUNT_SLUG, CLIENT_ID, CLIENT_KEY)
             execution_id = create_rqc_execution(QC_SLUG, access_token, dockerfile_content)
             execution_status = get_execution_status(execution_id, access_token)
-
-            print("Execution result:", execution_status)
 
            # Extract the result
             result = execution_status['result']
