@@ -1,9 +1,9 @@
 schema-version: v2
 kind: action
 metadata:
-  name: vulnerability-check
-  display-name: vulnerability-check
-  description: Action to check folder files vulnerabilities
+  name: container-check
+  display-name: container-check
+  description: Action to check container image vulnerabilities
   version: 0.0.1
 spec:
   type: python
