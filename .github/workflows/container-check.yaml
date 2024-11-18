@@ -44,7 +44,6 @@ jobs:
                 git config --global user.name "stackspot[bot]"
                 git config --global user.email "stackspot[bot]@users.noreply.github.com"
                 git checkout -b $BRANCH
-                git add Dockerfile
                 git commit -m "Update Dockerfile base image to fix vulnerabilities using StackSpot."
                 git push origin $BRANCH
 
