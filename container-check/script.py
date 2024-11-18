@@ -122,16 +122,22 @@ def run(metadata):
 
             print(f"\n\033[36mRESULT DATA:\033[0m {result_data}")
 
-            # Step 3: Check if the result contains a new Dockerfile content          
-            new_dockerfile_content = result_data.get('dockerfile', {}).get('dockerfile')
+            # Step 3: Check if the result contains a new Dockerfile content
+            dockerfile_result = result_data.get('dockerfile')
 
-            if new_dockerfile_content:
-                # Step 4: Update the Dockerfile with the new content
-                print(f"\n\033[36mUpdating Dockerfile: {dockerfile_path}\033[0m")
-                with open(dockerfile_path, 'w') as file:
-                    file.write(new_dockerfile_content)
-            else:
+            if dockerfile_result is None:
+                # If the result is None, print a message indicating no vulnerabilities
                 print(f"\n\033[36mNo updates needed for Dockerfile: {dockerfile_path}\033[0m")
+            else:
+                new_dockerfile_content = dockerfile_result.get('dockerfile')
+                if new_dockerfile_content:
+                    # Step 4: Update the Dockerfile with the new content
+                    print(f"\n\033[36mUpdating Dockerfile: {dockerfile_path}\033[0m")
+                    with open(dockerfile_path, 'w') as file:
+                        file.write(new_dockerfile_content)
+                else:
+                    # If the result is None, print a message indicating no vulnerabilities
+                    print(f"\n\033[36mNo updates needed for Dockerfile: {dockerfile_path}\033[0m")
 
         except KeyError as e:
             print(f"KeyError: {e} - Check if the key 'steps', 'step_result' or 'answer' is present in the response.")
