@@ -121,6 +121,9 @@ def run(metadata):
             result_data = json.loads(json_part)  # Parse the JSON
 
             # Step 3: Check if the result contains a new Dockerfile content
+            if result_data.get('dockerfile', {}) is None:
+                print(f"\n\033[36mNo updates needed for Dockerfile: {dockerfile_path}\033[0m")
+            
             new_dockerfile_content = result_data.get('dockerfile', {}).get('dockerfile')
 
             if new_dockerfile_content:
