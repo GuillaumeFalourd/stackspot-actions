@@ -40,7 +40,6 @@ jobs:
                 timestamp=$(date +'%Y%m%d-%H%M%S')
                 # Create the branch name
                 BRANCH="stackspot-${repo_name}-${timestamp}"
-                echo "BRANCH=$BRANCH" >> $GITHUB_OUTPUT
 
                 git config --global user.name "stackspot[bot]"
                 git config --global user.email "stackspot[bot]@users.noreply.github.com"
@@ -50,7 +49,7 @@ jobs:
                 git push origin $BRANCH
 
                 # Create PR
-                gh pr create --base main --head ${{ steps.commit_push.outputs.BRANCH }} --title "Fix Dockerfile vulnerabilities" --body "An automated PR which updates Docker base images to address vulnerabilities using StackSpot."
+                gh pr create --base main --head $BRANCH --title "Fix Dockerfile vulnerabilities" --body "An automated PR which updates Docker base images to address vulnerabilities using StackSpot."
             else
                 echo "WARNING: No changes were detected."
             fi
