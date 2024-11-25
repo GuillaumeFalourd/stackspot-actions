@@ -72,16 +72,14 @@ def main():
 
     # Extract PR URL and number of files updated
     pr_url = pr_response["html_url"]
-    files_updated = len(pr_response["changed_files"])
+    files_updated = pr_response["changed_files"]
 
-    # Generate CSV file name
-    csv_file = datetime.now().strftime("%Y-%m-%d-%H-%M-result.csv")
+    # Fill CSV file name
+    csv_file = os.getenv("PATH_FILE") 
 
     # Append data to the CSV file
     test_number = os.getenv("TEST_NUMBER")
     with open(csv_file, "a") as file:
-        if os.stat(csv_file).st_size == 0:  # Add header if file is empty
-            file.write("Test number,PR url,Files updated\n")
         file.write(f"{test_number},{pr_url},{files_updated}\n")
 
     print(f"CSV file '{csv_file}' updated successfully.")
