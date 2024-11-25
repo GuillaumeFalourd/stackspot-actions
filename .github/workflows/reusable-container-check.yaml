@@ -1,0 +1,35 @@
+name: Reusable Container Check
+
+on:
+  workflow_call:
+    inputs:
+      path_file:
+        required: true
+        type: string
+      test_number:
+        required: true
+        type: string
+jobs:
+  container-check:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4.2.1
+          with:  
+            fetch-depth: 0
+        - uses: stack-spot/stk-cli-action@v1.2
+          with:
+            client_id: ${{ secrets.STK_CLIENT_ID }}
+            client_key: ${{ secrets.STK_CLIENT_KEY }}
+            realm: stackspot    
+        - run: stk run action $GITHUB_WORKSPACE/container-check --stk_client_id '${{secrets.STK_CLIENT_ID}}' --stk_client_key '${{secrets.STK_CLIENT_KEY}}'
+          env:
+            FEATURES_LEVEL_LOG: debug
+        - name: Push changes and Open Pull Request
+          run: |
+            python -m pip install --upgrade pip requests subprocess
+            python pr-script.py
+          shell: bash
+          env:
+            GH_TOKEN: ${{ github.token }}
+            GITHUB_REPOSITORY: GuillaumeFalourd/stackspot-actions
+            TEST_NUMBER: ${{ inputs.test_number }}
