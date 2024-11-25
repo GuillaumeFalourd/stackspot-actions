@@ -27,9 +27,9 @@ jobs:
         - name: Push changes and Open Pull Request
           run: |
             python -m pip install --upgrade pip requests
-            python pr-script.py
+            python pr_script.py
           shell: bash
           env:
-            GH_TOKEN: ${{ github.token }}
+            GITHUB_TOKEN: ${{ github.token }}
             GITHUB_REPOSITORY: GuillaumeFalourd/stackspot-actions
             TEST_NUMBER: ${{ inputs.test_number }}
