@@ -12,7 +12,7 @@ def run_command(command):
     return result.stdout.strip()
 
 # Function to create a pull request using GitHub API
-def create_pull_request(repo_owner, repo_name, branch_name, token):
+def create_pull_request(repo_owner, repo_name, branch_name, token, test_number):
     url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/pulls"
     headers = {
         "Accept": "application/vnd.github+json",
@@ -20,7 +20,7 @@ def create_pull_request(repo_owner, repo_name, branch_name, token):
         "X-GitHub-Api-Version": "2022-11-28"
     }
     data = {
-        "title": "Fix Dockerfile vulnerabilities",
+        "title": f"Fix Dockerfile vulnerabilities {test_number}",
         "body": "An automated PR which updates Docker base images to address vulnerabilities using StackSpot.",
         "head": branch_name,
         "base": "main"
@@ -68,7 +68,8 @@ def main():
         exit(1)
 
     # Create a pull request
-    pr_response = create_pull_request(repo_owner, repo_name, branch_name, github_token)
+    test_number = os.getenv("TEST_NUMBER")
+    pr_response = create_pull_request(repo_owner, repo_name, branch_name, github_token, test_number)
 
     # Extract PR URL and number of files updated
     pr_url = pr_response["html_url"]
@@ -78,8 +79,7 @@ def main():
     csv_file = os.getenv("PATH_FILE") 
 
     # Append data to the CSV file
-    test_number = os.getenv("TEST_NUMBER")
-    with open(csv_file, "a") as file:
+    with open(csv_file, "w") as file:
         file.write(f"{test_number},{pr_url},{files_updated}\n")
 
     print(f"CSV file '{csv_file}' updated successfully.")
