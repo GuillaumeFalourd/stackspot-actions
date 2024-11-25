@@ -79,7 +79,7 @@ jobs:
         iteration: ${{fromJson(needs.iteration_setup.outputs.json)}}
       fail-fast: true
       max-parallel: 1
-    uses: ./.github/workflows/reusable-container-check.yaml@main
+    uses: ./.github/workflows/reusable-container-check.yaml
     secrets: inherit
     permissions:
       contents: write
