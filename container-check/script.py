@@ -71,7 +71,7 @@ def get_execution_status(execution_id, access_token):
         )
         response_data = response.json()
         status = response_data['progress']['status']
-        if status in ['COMPLETED', 'FAILED']:
+        if status in ['COMPLETED', 'FAILURE']:
             return response_data
         else:
             print("Status:", f'{status} ({i})')
