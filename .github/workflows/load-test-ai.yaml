@@ -90,7 +90,7 @@ jobs:
 
   close_pr:
     needs: [load-test]
-    runs-on: ubtunu-latest
+    runs-on: ubuntu-latest
     steps:
         - run: |
             if ! command -v gh &> /dev/null; then
