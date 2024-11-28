@@ -69,23 +69,36 @@ def main():
 
     # Create a pull request
     test_number = os.getenv("TEST_NUMBER")
+    print(f"Test number: '{test_number}'.")
     pr_response = create_pull_request(repo_owner, repo_name, branch_name, github_token, test_number)
+
+    # Change to main branch
+    run_command(f"git checkout main")
+    run_command(f"git pull origin main")
 
     # Extract PR URL and number of files updated
     pr_url = pr_response["html_url"]
+    print(f"PR URL: '{pr_url}'.")
     files_updated = pr_response["changed_files"]
+    print(f"Updated files: '{files_updated}'.")
+
 
     # Fill CSV file name
     csv_file = os.getenv("PATH_FILE") 
 
     # Append data to the CSV file
-    with open(csv_file, "w") as file:
+    with open(csv_file, "a") as file:
         file.write(f"{test_number},{pr_url},{files_updated}\n")
-
+    
     print(f"CSV file '{csv_file}' updated successfully.")
+    
+    # Check if there are changes in the repository
+    changes = run_command("git status --porcelain")
+    if not changes:
+        print("WARNING: No changes were detected.")
+        return
 
     # Update CSV file on main branch
-    run_command(f"git checkout main")
     run_command("git add .")
     run_command(f'git commit -m "Update {csv_file} on main branch."')
     run_command(f"git push origin {branch_name}")
