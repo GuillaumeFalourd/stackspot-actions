@@ -37,12 +37,17 @@ jobs:
           run: |
             git branch
             if [[ `git status --porcelain` ]]; then
+              # Configure Git user for the CI/CD pipeline
               git config --global user.name "stackspot[bot]"
               git config --global user.email "stackspot[bot]@users.noreply.github.com"
+              # Stage the updated file(s) created during the pipeline
               git add .
-              git commit -m "Update ${{ inputs.path_file }} with new data."
-              git pull --rebase origin main
-              git push --force origin main
+              # Commit the local changes
+              git commit -m "Update r${{ inputs.path_file }} with new data."
+              # Pull the latest changes from the remote branch while keeping local changes
+              git pull --rebase --strategy=recursive -X ours origin main
+              # Push the changes to the remote branch
+              git push origin main
             else
               echo "WARNING: No changes were detected."
             fi
