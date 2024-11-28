@@ -98,20 +98,6 @@ def main():
         # Iterate through each row in the CSV file
         for row in reader:
             print(row)
-    
-    # Check if there are changes in the repository
-    changes = run_command("git status --porcelain")
-    if not changes:
-        print("WARNING: No changes were detected")
-        return
-
-    # Update CSV file on main branch
-    run_command(f"git checkout main")
-    run_command("git clean -fd")  # Forcefully remove untracked files and directories
-    run_command("git pull origin main")  # Pull the latest changes from the remote main branch
-    run_command(f"git add .")
-    run_command(f'git commit -m "Update {path_file} on main branch."')
-    run_command(f"git push origin main")
 
 if __name__ == "__main__":
     main()
