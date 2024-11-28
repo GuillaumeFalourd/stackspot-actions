@@ -85,7 +85,7 @@ def main():
     print(f"CSV file '{csv_file}' updated successfully.")
 
     # Update CSV file on main branch
-    run_command(f"git checkout -b main")
+    run_command(f"git checkout main")
     run_command("git add .")
     run_command(f'git commit -m "Update {csv_file} on main branch."')
     run_command(f"git push origin {branch_name}")
