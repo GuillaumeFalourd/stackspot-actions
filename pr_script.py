@@ -87,16 +87,16 @@ def main():
     # Append data to the CSV file
     with open(csv_file, "a") as file:
         file.write(f"{test_number},{pr_url},{files_updated}\n")
-    
+
     print(f"CSV file '{csv_file}' updated successfully.")
 
     # Open and read the CSV file
     with open(csv_file, "r") as file:
         reader = csv.reader(file)
         
-    # Iterate through each row in the CSV file
-    for row in reader:
-        print(row)
+        # Iterate through each row in the CSV file
+        for row in reader:
+            print(row)
     
     # Check if there are changes in the repository
     changes = run_command("git status --porcelain")
