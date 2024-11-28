@@ -97,7 +97,12 @@ def main():
         
         # Iterate through each row in the CSV file
         for row in reader:
-            print(row)
+            print(row)# Ensure the local main branch is up-to-date
+
+    # Ensure the local main branch is up-to-date
+    run_command("git fetch origin")
+    run_command("git pull origin main")
+    run_command("git checkout main")
 
 if __name__ == "__main__":
     main()
