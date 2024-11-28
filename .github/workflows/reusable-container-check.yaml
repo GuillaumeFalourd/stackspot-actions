@@ -36,6 +36,7 @@ jobs:
         - run: |
                 - name: Push changes and Open Pull Request
           id: commit_push
+        - name: Push CSV file on main
           run: |
             if [[ `git status --porcelain` ]]; then
               git config --global user.name "stackspot[bot]"
