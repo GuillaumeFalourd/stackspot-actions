@@ -101,8 +101,6 @@ def main():
 
     # Ensure the local main branch is up-to-date
     run_command("git fetch origin")
-    run_command("git config pull.rebase false")
-    run_command("git pull origin main")
     run_command("git checkout main")
 
 if __name__ == "__main__":

@@ -41,7 +41,8 @@ jobs:
               git config --global user.email "stackspot[bot]@users.noreply.github.com"
               git add .
               git commit -m "Update ${{ inputs.path_file }} with new data."
-              git push origin main
+              git pull --rebase origin main
+              git push --force origin main
             else
               echo "WARNING: No changes were detected."
             fi
