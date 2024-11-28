@@ -24,7 +24,7 @@ jobs:
         - run: stk run action $GITHUB_WORKSPACE/container-check --stk_client_id '${{secrets.STK_CLIENT_ID}}' --stk_client_key '${{secrets.STK_CLIENT_KEY}}'
           env:
             FEATURES_LEVEL_LOG: debug
-        - name: Push changes and Open Pull Request
+        - name: Open Pull Request
           run: python pr_script.py
           shell: bash
           env:
@@ -37,15 +37,19 @@ jobs:
           run: |
             git branch
             if [[ `git status --porcelain` ]]; then
-              # Configure Git user for the CI/CD pipeline
-              git config --global user.name "stackspot[bot]"
-              git config --global user.email "stackspot[bot]@users.noreply.github.com"
-              # Stage the updated file(s) created during the pipeline
+              # Stash the changes
+              git stash
+
+              # Pull the latest changes from the remote branch
+              git pull --rebase origin main
+
+              # Apply the stashed changes
+              git stash pop
+
+              # Stage and commit the changes
               git add .
-              # Commit the local changes
-              git commit -m "Update r${{ inputs.path_file }} with new data."
-              # Pull the latest changes from the remote branch while keeping local changes
-              git pull --rebase --strategy=recursive -X ours origin main
+              git commit -m "Update ${{ inputs.path_file }} with new data."
+
               # Push the changes to the remote branch
               git push origin main
             else
