@@ -29,6 +29,7 @@ jobs:
           shell: bash
           env:
             GITHUB_TOKEN: ${{ github.token }}
+            GITHUB_WORKSPACE: ${{ github.workspace }}
             GITHUB_REPOSITORY: GuillaumeFalourd/stackspot-actions
             TEST_NUMBER: ${{ inputs.test_number }}
             PATH_FILE: ${{ inputs.path_file }}

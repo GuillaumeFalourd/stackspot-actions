@@ -79,9 +79,10 @@ def main():
     files_updated = pr_response["changed_files"]
     print(f"Updated files: '{files_updated}'.")
 
-
     # Fill CSV file name
-    csv_file = os.getenv("PATH_FILE") 
+    github_workspace = os.getenv("GITHUB_WORKSPACE") 
+    csv_file = github_workspace + "/" + os.getenv("PATH_FILE") 
+    print(f"CSV file: '{csv_file}'.")
 
     # Append data to the CSV file
     with open(csv_file, "a") as file:
