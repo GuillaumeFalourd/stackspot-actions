@@ -8,7 +8,7 @@ from datetime import datetime
 def run_command(command):
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     if result.returncode != 0:
-        print(f"Error: {recsvsult.stderr}")
+        print(f"Error: {result.stderr}")
         exit(1)
     return result.stdout.strip()
 
@@ -81,7 +81,8 @@ def main():
 
     # Fill CSV file name
     github_workspace = os.getenv("GITHUB_WORKSPACE") 
-    csv_file = github_workspace + "/" + os.getenv("PATH_FILE") 
+    path_file = os.getenv("PATH_FILE") 
+    csv_file = github_workspace + "/" + path_file
     print(f"CSV file: '{csv_file}'.")
 
     # Append data to the CSV file
@@ -108,8 +109,8 @@ def main():
 
     # Change to main branch
     run_command(f"git checkout main")
-    run_command(f"git add {csv_file}")
-    run_command(f'git commit -m "Update {csv_file} on main branch."')
+    run_command(f"git add .")
+    run_command(f'git commit -m "Update {path_file} on main branch."')
     run_command(f"git push origin main")
 
 if __name__ == "__main__":
