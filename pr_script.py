@@ -108,7 +108,7 @@ def main():
 
     # Change to main branch
     run_command(f"git checkout main")
-    run_command("git add csv_file")
+    run_command(f"git add {csv_file}")
     run_command(f'git commit -m "Update {csv_file} on main branch."')
     run_command(f"git push origin main")
 
