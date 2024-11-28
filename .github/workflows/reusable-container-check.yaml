@@ -38,7 +38,7 @@ jobs:
             if [[ `git status --porcelain` ]]; then
               git config --global user.name "stackspot[bot]"
               git config --global user.email "stackspot[bot]@users.noreply.github.com"
-              git checkout main --ours
+              git checkout main -f --ours
               git add .
               git commit -m "Update ${{ inputs.path_file }} with data"
               git push origin main
