@@ -1,4 +1,5 @@
 import os
+import csv
 import subprocess
 import requests
 from datetime import datetime
@@ -7,7 +8,7 @@ from datetime import datetime
 def run_command(command):
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     if result.returncode != 0:
-        print(f"Error: {result.stderr}")
+        print(f"Error: {recsvsult.stderr}")
         exit(1)
     return result.stdout.strip()
 
@@ -72,10 +73,6 @@ def main():
     print(f"Test number: '{test_number}'.")
     pr_response = create_pull_request(repo_owner, repo_name, branch_name, github_token, test_number)
 
-    # Change to main branch
-    run_command(f"git checkout main")
-    run_command(f"git pull origin main")
-
     # Extract PR URL and number of files updated
     pr_url = pr_response["html_url"]
     print(f"PR URL: '{pr_url}'.")
@@ -91,6 +88,14 @@ def main():
         file.write(f"{test_number},{pr_url},{files_updated}\n")
     
     print(f"CSV file '{csv_file}' updated successfully.")
+
+    # Open and read the CSV file
+    with open(csv_file, "r") as file:
+        reader = csv.reader(file)
+        
+    # Iterate through each row in the CSV file
+    for row in reader:
+        print(row)
     
     # Check if there are changes in the repository
     changes = run_command("git status --porcelain")
@@ -99,9 +104,12 @@ def main():
         return
 
     # Update CSV file on main branch
-    run_command("git add .")
+
+    # Change to main branch
+    run_command(f"git checkout main")
+    run_command("git add csv_file")
     run_command(f'git commit -m "Update {csv_file} on main branch."')
-    run_command(f"git push origin {branch_name}")
+    run_command(f"git push origin main")
 
 if __name__ == "__main__":
     main()
