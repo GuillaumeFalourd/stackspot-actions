@@ -102,13 +102,12 @@ def main():
     # Check if there are changes in the repository
     changes = run_command("git status --porcelain")
     if not changes:
-        print("WARNING: No changes were detected.")
+        print("WARNING: No changes")
         return
 
     # Update CSV file on main branch
-
-    # Change to main branch
     run_command(f"git checkout main")
+    run_command("git pull origin main")  # Pull the latest changes from the remote main branch
     run_command(f"git add .")
     run_command(f'git commit -m "Update {path_file} on main branch."')
     run_command(f"git push origin main")
