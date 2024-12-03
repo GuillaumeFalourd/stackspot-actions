@@ -35,31 +35,29 @@ jobs:
             PATH_FILE: ${{ inputs.path_file }}
         - name: Push CSV file on main
           run: |
+            # Display the current branch and status
             git branch
             git status
 
             # Check if there are untracked or modified files
             if [[ `git status --porcelain` ]]; then
-              # Add untracked files to the staging area
+              # Add all changes (including untracked files) to the staging area
               git add .
 
-              # Commit the untracked files with a temporary message
-              git commit -m "Temporary commit for untracked files"
+              # Commit the changes with a meaningful message
+              git commit -m "Update reports/2024-12-03-18-06-result.csv with new data."
 
-              # Pull the latest changes from the remote branch, ignoring conflicts
+              # Fetch the latest changes from the remote branch
               git fetch origin main
+
+              # Forcefully reset the local branch to match the remote branch
               git reset --hard origin/main
 
-              # Apply the temporary commit changes
-              git cherry-pick --strategy=recursive -X theirs HEAD~1
-
-              # Stage and commit the changes with the final message
+              # Reapply the local changes on top of the remote branch
               git add .
-              git commit -m "Update reports/2024-12-03-17-43-result.csv with new data."
+              git commit -m "Update reports/2024-12-03-18-06-result.csv with new data."
 
-              git status
-
-              # Push the changes to the remote branch
+              # Push the changes to the remote branch, overwriting it
               git push origin main --force
             else
               echo "WARNING: No changes were detected."
