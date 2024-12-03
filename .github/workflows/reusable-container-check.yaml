@@ -41,8 +41,9 @@ jobs:
               # Stash the changes
               git stash
 
-              # Pull the latest changes from the remote branch
-              git pull origin main
+              # Pull the latest changes from the remote branch, ignoring conflicts
+              git fetch origin main
+              git reset --hard origin/main
 
               # Apply the stashed changes
               git stash pop
