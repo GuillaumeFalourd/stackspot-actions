@@ -46,9 +46,13 @@ jobs:
               # Apply the stashed changes
               git stash pop
 
+              git status
+
               # Stage and commit the changes
               git add .
               git commit -m "Update ${{ inputs.path_file }} with new data."
+
+              git status
 
               # Push the changes to the remote branch
               git push origin main
