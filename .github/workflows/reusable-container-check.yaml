@@ -55,7 +55,7 @@ jobs:
               git status
 
               # Push the changes to the remote branch
-              git push origin main
+              git push origin main --force
             else
               echo "WARNING: No changes were detected."
             fi
