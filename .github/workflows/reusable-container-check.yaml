@@ -37,20 +37,25 @@ jobs:
           run: |
             git branch
             git status
+
+            # Check if there are untracked or modified files
             if [[ `git status --porcelain` ]]; then
-              # Stash the changes
-              git stash
+              # Add untracked files to the staging area
+              git add .
+
+              # Commit the untracked files with a temporary message
+              git commit -m "Temporary commit for untracked files"
 
               # Pull the latest changes from the remote branch, ignoring conflicts
               git fetch origin main
               git reset --hard origin/main
 
-              # Apply the stashed changes
-              git stash pop
+              # Apply the temporary commit changes
+              git cherry-pick --strategy=recursive -X theirs HEAD~1
 
-              # Stage and commit the changes
+              # Stage and commit the changes with the final message
               git add .
-              git commit -m "Update ${{ inputs.path_file }} with new data."
+              git commit -m "Update reports/2024-12-03-17-43-result.csv with new data."
 
               git status
 
