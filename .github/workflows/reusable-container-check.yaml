@@ -45,20 +45,16 @@ jobs:
               git add .
 
               # Commit the changes with a meaningful message
-              git commit -m "Update reports/2024-12-03-18-06-result.csv with new data."
+              git commit -m "Update reports/2024-12-03-18-41-result.csv with new data."
 
               # Fetch the latest changes from the remote branch
               git fetch origin main
 
-              # Forcefully reset the local branch to match the remote branch
-              git reset --hard origin/main
-
-              # Reapply the local changes on top of the remote branch
-              git add .
-              git commit -m "Update reports/2024-12-03-18-06-result.csv with new data."
+              # Rebase the local changes on top of the remote branch
+              git rebase origin/main
 
               # Push the changes to the remote branch, overwriting it
-              git push origin main --force
+              git push origin main --force-with-lease
             else
               echo "WARNING: No changes were detected."
             fi
