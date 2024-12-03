@@ -42,7 +42,7 @@ jobs:
               git stash
 
               # Pull the latest changes from the remote branch
-              git pull --rebase origin main
+              git pull origin main
 
               # Apply the stashed changes
               git stash pop
