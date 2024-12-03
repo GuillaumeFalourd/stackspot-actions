@@ -36,6 +36,7 @@ jobs:
         - name: Push CSV file on main
           run: |
             git branch
+            git status
             if [[ `git status --porcelain` ]]; then
               # Stash the changes
               git stash
@@ -45,8 +46,6 @@ jobs:
 
               # Apply the stashed changes
               git stash pop
-
-              git status
 
               # Stage and commit the changes
               git add .
