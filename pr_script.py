@@ -57,6 +57,7 @@ def main():
     run_command('git config --global user.email "stackspot[bot]@users.noreply.github.com"')
 
     # Create a new branch, add changes, commit, and push
+    run_command(f"git pull origin main")
     run_command(f"git checkout -b {branch_name}")
     run_command("git add .")
     run_command('git commit -m "Update Dockerfile base image to fix vulnerabilities using StackSpot."')
