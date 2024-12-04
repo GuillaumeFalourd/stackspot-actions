@@ -50,10 +50,14 @@ jobs:
               # Fetch the latest changes from the remote branch
               git fetch origin main
 
-              # Rebase the local changes on top of the remote branch
-              git rebase origin/main
+              # Pull the latest changes from the remote branch with rebase, resolving conflicts by favoring local changes
+              git pull --rebase --strategy-option=theirs origin main || {
+                echo "WARNING: Conflict detected. Resolving by favoring local changes."
+                git rebase --abort
+                git pull --strategy=ours origin main
+              }
 
-              # Push the changes to the remote branch, overwriting it
+              # Push the changes to the remote branch
               git push origin main --force-with-lease
             else
               echo "WARNING: No changes were detected."
