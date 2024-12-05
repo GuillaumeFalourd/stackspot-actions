@@ -1,1 +1,2 @@
 Test number,PR url,Files updated,Vulnerabilities
+1,https://github.com/GuillaumeFalourd/stackspot-actions/pull/209,2,['/home/runner/work/stackspot-actions/stackspot-actions/Dockerfile: vulnerability', '/home/runner/work/stackspot-actions/stackspot-actions/Dockerfile: vulnerability', '/home/runner/work/stackspot-actions/stackspot-actions/test-nok/Dockerfile: vulnerability']
