@@ -125,14 +125,14 @@ def run(metadata):
             # Step 3: Check if the result contains a new Dockerfile content
             dockerfile_result = result_data.get('dockerfile')
 
-            # print(f"\n\033[DOCKERFILE RESULT:\033[0m {dockerfile_result}")
+            print(f"\n\033[DOCKERFILE RESULT:\033[0m {dockerfile_result}")
 
             if dockerfile_result is None:
                 # If the result is None, print a message indicating no vulnerabilities
                 print(f"\n\033[36mNo update needed for Dockerfile: {dockerfile_path}\033[0m")
             else:
                 new_dockerfile_content = dockerfile_result.get('dockerfile')
-                #print(f"\n\033[DOCKERFILE CONTENT:\033[0m {new_dockerfile_content}")
+                print(f"\n\033[DOCKERFILE CONTENT:\033[0m {new_dockerfile_content}")
                 if new_dockerfile_content:
                     # Step 4: List vulnerabilities found
                     vulnerabilities = dockerfile_result.get('vulnerabilities', [])
