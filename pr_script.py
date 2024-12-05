@@ -89,7 +89,7 @@ def main():
 
     # Append data to the CSV file
     with open(csv_file, "a") as file:
-        file.write(f"{test_number},{pr_url},{files_updated},{vulnerabilities}\n")
+        file.write(f"{test_number},{pr_url},{files_updated},'{vulnerabilities}'\n")
 
     print(f"CSV file '{csv_file}' updated successfully.")
 
