@@ -87,12 +87,14 @@ def main():
     csv_file = github_workspace + "/" + path_file
     print(f"CSV file: '{csv_file}'.")
     vulnerabilities = os.getenv("VULNERABILITIES")
-    vulnerabilities = [s.replace("'", '"') for s in vulnerabilities]
-    vulnerabilities = json.dumps(vulnerabilities)
+    # Manually escape double quotes and wrap in double quotes
+    vulnerabilities = vulnerabilities.replace('"', '""')  # Escape double quotes
+    vulnerabilities = f'"{vulnerabilities}"'  # Wrap in double quotes
+
 
     # Append data to the CSV file
     with open(csv_file, "a") as file:
-        file.write(f"{test_number},{pr_url},{files_updated},'{vulnerabilities}'\n")
+        file.write(f"{test_number},{pr_url},{files_updated},{vulnerabilities}\n")
 
     print(f"CSV file '{csv_file}' updated successfully.")
 
