@@ -1,7 +1,6 @@
-# Etapa 1: Usar a imagem oficial do AWS CLI para obter o binário
-FROM amazon/aws-cli:2.17.64 AS awscli-installer
+<dockerfile content="FROM amazon/aws-cli:2.17.64 AS awscli-installer
 
-FROM amazoncorretto:22.0.2-al2023 AS builder
+FROM amazoncorretto:23.0.1-al2023 AS builder
 WORKDIR /opt/app
 
 # Copiar os arquivos da aplicação
@@ -39,4 +38,4 @@ COPY --from=builder /opt/app/target/cloud-runtime-api.jar app.jar
 EXPOSE 8080
 
 # Comando de entrada para rodar a aplicação
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]">
