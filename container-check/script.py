@@ -120,7 +120,7 @@ def run(metadata):
             json_part = extract_json_from_result(result)  # Extract the JSON part
             result_data = json.loads(json_part)  # Parse the JSON
 
-            # print(f"\n\033[36mRESULT DATA:\033[0m {result_data}")
+            print(f"\n\033[36mRESULT DATA:\033[0m {result_data}")
 
             # Step 3: Check if the result contains a new Dockerfile content
             dockerfile_result = result_data.get('dockerfile')
