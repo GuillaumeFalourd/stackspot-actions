@@ -135,6 +135,12 @@ def run(metadata):
                     print(f"\n\033[36mUpdating Dockerfile: {dockerfile_path}\033[0m")
                     with open(dockerfile_path, 'w') as file:
                         file.write(new_dockerfile_content)
+                    # Step 5: List vulnerabilities found
+                    vulnerabilities = dockerfile_result.get('vulnerabilities', [])
+                    if vulnerabilities:
+                        print(f"\nTotal vulnerabilities: {len(vulnerabilities)}")
+                        for message in vulnerabilities:
+                            print(f"\n- {message}")
                 else:
                     # If the result is None, print a message indicating no vulnerabilities
                     print(f"\n\033[36mNo updates needed for Dockerfile: {dockerfile_path}\033[0m")
