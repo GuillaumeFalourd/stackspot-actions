@@ -82,13 +82,13 @@ def main():
 
     # Fill CSV file name
     github_workspace = os.getenv("GITHUB_WORKSPACE") 
-    path_file = os.getenv("PATH_FILE") 
+    path_file = os.getenv("PATH_FILE")
     csv_file = github_workspace + "/" + path_file
     print(f"CSV file: '{csv_file}'.")
 
     # Append data to the CSV file
     with open(csv_file, "a") as file:
-        file.write(f"{test_number},{pr_url},{files_updated}\n")
+        file.write(f"{test_number},{pr_url},{files_updated},{os.getenv("VULNERABILITIES")}\n")
 
     print(f"CSV file '{csv_file}' updated successfully.")
 

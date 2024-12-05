@@ -33,7 +33,7 @@ jobs:
             csv_file="${current_date}-result.csv"
 
             # Create the CSV file and add the header row
-            echo "Test number,PR url,Files updated" > "$csv_file"
+            echo "Test number,PR url,Files updated,Vulnerabilities" > "$csv_file"
 
             # Print a success message
             echo "CSV file '$csv_file' created successfully."

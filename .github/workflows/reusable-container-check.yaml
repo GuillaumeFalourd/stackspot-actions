@@ -21,7 +21,9 @@ jobs:
             client_id: ${{ secrets.STK_CLIENT_ID }}
             client_key: ${{ secrets.STK_CLIENT_KEY }}
             realm: stackspot    
-        - run: stk run action $GITHUB_WORKSPACE/container-check --stk_client_id '${{secrets.STK_CLIENT_ID}}' --stk_client_key '${{secrets.STK_CLIENT_KEY}}'
+        - name: Run container check action
+          id: container_check
+          run: stk run action $GITHUB_WORKSPACE/container-check --stk_client_id '${{secrets.STK_CLIENT_ID}}' --stk_client_key '${{secrets.STK_CLIENT_KEY}}'
           env:
             FEATURES_LEVEL_LOG: debug
         - name: Open Pull Request
@@ -33,6 +35,7 @@ jobs:
             GITHUB_REPOSITORY: GuillaumeFalourd/stackspot-actions
             TEST_NUMBER: ${{ inputs.test_number }}
             PATH_FILE: ${{ inputs.path_file }}
+            VULNERABILITIES: ${{ steps.container_check.outputs.vulnerabilities}}
         - name: Push CSV file on main
           run: |
             # Display the current branch and status

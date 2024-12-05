@@ -3,6 +3,12 @@ import time
 import json
 import os
 
+def save_output(name: str, value: str):
+    with open(os.environ['GITHUB_OUTPUT'], 'a') as output_file:
+        print(f'{name}<<EOF', file=output_file)
+        print(value, file=output_file)
+        print('EOF', file=output_file)
+
 def extract_json_from_result(result):
     """
     Extract the JSON part from the result string.
@@ -101,6 +107,7 @@ def run(metadata):
 
     print(f"\n\033[36m{len(dockerfiles)} Dockerfile(s) detected in the repository.\033[0m")
 
+    all_vulnerabilities = []
     # Step 2: Process each Dockerfile
     for dockerfile_path in dockerfiles:
         print(f'\n\033[36mProcessing Dockerfile: {dockerfile_path}\033[0m')
@@ -134,6 +141,7 @@ def run(metadata):
                 print(f"\n\033[36mTotal vulnerabilities detected: {len(vulnerabilities)}\033[0m")
                 for vulnerability in vulnerabilities:
                     print(f"- {vulnerability}")
+                    all_vulnerabilities.append(f"{dockerfile_path}: vulnerability")
 
                 if dockerfile_content:
                     # Step 5: Update the Dockerfile with the new content
@@ -152,3 +160,5 @@ def run(metadata):
             print(f"JSONDecodeError: {e} - Check if the JSON string is formatted correctly.")
         except Exception as e:
             print(f"Unexpected error: {e}")
+
+    save_output("vulnerabilities", all_vulnerabilities)
