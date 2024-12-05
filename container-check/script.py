@@ -127,23 +127,26 @@ def run(metadata):
 
             print(f"\n\033[DOCKERFILE RESULT:\033[0m {dockerfile_result}")
 
-            if dockerfile_result is None:
-                # If the result is None, print a message indicating no vulnerabilities
+            # Step 3: Check if the result contains a new Dockerfile content
+            dockerfile_content = result_data.get('dockerfile')  # This is the Dockerfile content as a string
+            vulnerabilities = result_data.get('vulnerabilities', [])  # This is the list of vulnerabilities
+
+            print(f"\n\033[36mDOCKERFILE CONTENT:\033[0m {dockerfile_content}")
+
+            if not vulnerabilities:
+                # If there are no vulnerabilities, print a message indicating no update is needed
                 print(f"\n\033[36mNo update needed for Dockerfile: {dockerfile_path}\033[0m")
             else:
-                vulnerabilities = dockerfile_result.get('vulnerabilities', [])
-                if vulnerabilities:
-                    # Step 4: List vulnerabilities found
-                    print(f"\n\033[36mTotal vulnerabilities detected: {len(vulnerabilities)}\033[0m")
-                    for vulnerability in vulnerabilities:
-                        print(f"- {vulnerability}")
+                # Step 4: List vulnerabilities found
+                print(f"\n\033[36mTotal vulnerabilities detected: {len(vulnerabilities)}\033[0m")
+                for vulnerability in vulnerabilities:
+                    print(f"- {vulnerability}")
 
-                new_dockerfile_content = dockerfile_result.get('dockerfile')
-                if new_dockerfile_content:
+                if dockerfile_content:
                     # Step 5: Update the Dockerfile with the new content
                     print(f"\n\033[36mUpdating Dockerfile: {dockerfile_path}\033[0m")
                     with open(dockerfile_path, 'w') as file:
-                        file.write(new_dockerfile_content)
+                        file.write(dockerfile_content)
                 else:
                     # If the result is None, print a message indicating no vulnerabilities
                     print(f"\n\033[36mNo update needed for Dockerfile: {dockerfile_path}\033[0m")
