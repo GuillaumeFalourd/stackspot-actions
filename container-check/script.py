@@ -129,24 +129,24 @@ def run(metadata):
 
             if dockerfile_result is None:
                 # If the result is None, print a message indicating no vulnerabilities
-                print(f"\n\033[36mNo updates needed for Dockerfile: {dockerfile_path}\033[0m")
+                print(f"\n\033[36mNo update needed for Dockerfile: {dockerfile_path}\033[0m")
             else:
                 new_dockerfile_content = dockerfile_result.get('dockerfile')
                 #print(f"\n\033[DOCKERFILE CONTENT:\033[0m {new_dockerfile_content}")
                 if new_dockerfile_content:
-                    # Step 4: Update the Dockerfile with the new content
+                    # Step 4: List vulnerabilities found
+                    vulnerabilities = dockerfile_result.get('vulnerabilities', [])
+                    if vulnerabilities:
+                        print(f"\n\033[36mTotal vulnerabilities detected: {len(vulnerabilities)}\033[0m")
+                        for vulnerability in vulnerabilities:
+                            print(f"- {vulnerability}")
+                    # Step 5: Update the Dockerfile with the new content
                     print(f"\n\033[36mUpdating Dockerfile: {dockerfile_path}\033[0m")
                     with open(dockerfile_path, 'w') as file:
                         file.write(new_dockerfile_content)
-                    # Step 5: List vulnerabilities found
-                    vulnerabilities = dockerfile_result.get('vulnerabilities', [])
-                    if vulnerabilities:
-                        print(f"\nTotal vulnerabilities: {len(vulnerabilities)}")
-                        for message in vulnerabilities:
-                            print(f"\n- {message}")
                 else:
                     # If the result is None, print a message indicating no vulnerabilities
-                    print(f"\n\033[36mNo updates needed for Dockerfile: {dockerfile_path}\033[0m")
+                    print(f"\n\033[36mNo update needed for Dockerfile: {dockerfile_path}\033[0m")
 
         except KeyError as e:
             print(f"KeyError: {e} - Check if the key 'steps', 'step_result' or 'answer' is present in the response.")
