@@ -1,7 +1,6 @@
-# Etapa 1: Usar a imagem oficial do AWS CLI para obter o binário
-FROM amazon/aws-cli:2.17.64 AS awscli-installer
+<dockerfile content="" updated="">FROM amazon/aws-cli:2.17.64 AS awscli-installer
 
-FROM amazoncorretto:21.0.3-al2023 AS builder
+FROM amazoncorretto:21.0.5-al2023 AS builder
 WORKDIR /opt/app
 
 # Copiar os arquivos da aplicação
@@ -14,7 +13,7 @@ COPY .mvn .mvn
 RUN chmod +x mvnw && ./mvnw clean package -DskipTests --no-transfer-progress
 
 # Etapa 2: Usar a imagem amazoncorretto para o runtime
-FROM amazoncorretto:21.0.3-al2023 AS runtime
+FROM amazoncorretto:21.0.5-al2023 AS runtime
 #Copiar os arquivos da aplicação
 COPY src src
 COPY pom.xml pom.xml
@@ -39,4 +38,4 @@ COPY --from=builder /opt/app/target/cloud-runtime-api.jar app.jar
 EXPOSE 8080
 
 # Comando de entrada para rodar a aplicação
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]</dockerfile>
