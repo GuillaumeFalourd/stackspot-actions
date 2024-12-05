@@ -86,6 +86,7 @@ def main():
     csv_file = github_workspace + "/" + path_file
     print(f"CSV file: '{csv_file}'.")
     vulnerabilities = os.getenv("VULNERABILITIES")
+    vulnerabilities = [s.replace("'", '"') for s in vulnerabilities]
 
     # Append data to the CSV file
     with open(csv_file, "a") as file:
