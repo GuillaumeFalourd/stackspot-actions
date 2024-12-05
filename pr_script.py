@@ -1,5 +1,6 @@
 import os
 import csv
+import json
 import subprocess
 import requests
 from datetime import datetime
@@ -12,7 +13,7 @@ def run_command(command):
         exit(1)
     return result.stdout.strip()
 
-# Function to create a pull request using GitHub API
+# Function to create a pull requesjson.dumpst using GitHub API
 def create_pull_request(repo_owner, repo_name, branch_name, token, test_number):
     url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/pulls"
     headers = {
@@ -87,6 +88,7 @@ def main():
     print(f"CSV file: '{csv_file}'.")
     vulnerabilities = os.getenv("VULNERABILITIES")
     vulnerabilities = [s.replace("'", '"') for s in vulnerabilities]
+    vulnerabilities = json.dumps(vulnerabilities)
 
     # Append data to the CSV file
     with open(csv_file, "a") as file:
