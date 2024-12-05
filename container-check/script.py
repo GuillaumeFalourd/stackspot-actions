@@ -122,13 +122,8 @@ def run(metadata):
 
             #print(f"\n\033[36mRESULT DATA:\033[0m {result_data}")
 
-            # Step 3: Check if the result contains a new Dockerfile content
-            dockerfile_result = result_data.get('dockerfile')
-
-            print(f"\n\033[36mDOCKERFILE RESULT:\033[0m {dockerfile_result}")
-
-            # Step 3: Check if the result contains a new Dockerfile content
             dockerfile_content = result_data.get('dockerfile')  # This is the Dockerfile content as a string
+            #print(f"\n\033[36mDOCKERFILE RESULT:\033[0m {dockerfile_result}")
             vulnerabilities = result_data.get('vulnerabilities', [])  # This is the list of vulnerabilities
 
             if not vulnerabilities:
