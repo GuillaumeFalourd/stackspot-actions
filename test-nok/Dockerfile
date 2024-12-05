@@ -1,6 +1,6 @@
 FROM amazon/aws-cli:2.17.64 AS awscli-installer
 
-FROM amazoncorretto:22.0.2-al2023 AS builder
+FROM amazoncorretto:23.0.1-al2023 AS builder
 WORKDIR /opt/app
 
 COPY src src
