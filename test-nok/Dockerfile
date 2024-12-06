@@ -10,7 +10,7 @@ COPY .mvn .mvn
 
 RUN chmod +x mvnw && ./mvnw clean package -DskipTests --no-transfer-progress
 
-FROM amazoncorretto:21.0.4-al2023 AS runtime
+FROM amazoncorretto:21.0.5-al2023 AS runtime
 
 COPY src src
 COPY pom.xml pom.xml
