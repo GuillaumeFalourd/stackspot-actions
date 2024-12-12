@@ -24,6 +24,8 @@ Repository with StackSpot actions
 
 `stk run action owasp-check`: Action using StackSpot AI remote quick command to check files vulnerabilities focussing on OWASP top 10. 
 
+`stk run action dynamodb-backup`: Action to create a AWS Dynamo DB backup
+
 ## Example
 
 When running the `stk run action vulnerability-check` locally, it's possible to check all files vulnerabilities in the current and sub-directories.

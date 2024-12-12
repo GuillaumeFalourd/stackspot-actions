@@ -1,0 +1,46 @@
+schema-version: v2
+kind: action
+metadata:
+  name: dynamodb-backup
+  display-name: dynamodb-backup
+  description: Action to create a AWS DynamoDB Backup
+  version: 0.0.1
+spec:
+  type: python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  repository: https://github.com/GuillaumeFalourd/stackspot-actions
+  inputs:
+    - label: AWS_ACCESS_KEY_ID
+      name: aws_access_key_id
+      type: password
+      required: true
+      help: 'Your AWS access key id to access the account'
+    - label: AWS_SECRET_ACCESS_KEY
+      name: aws_secret_access_key
+      type: password
+      required: true
+      help: 'Your AWS secret access key to access the account'
+    - label: AWS_REGION
+      name: aws_region
+      type: text
+      required: true
+      help: 'Your AWS Region'
+    - label: DynamoDB Table Name
+      name: dynamodb_table_name
+      type: text
+      required: true
+      help: 'The StackSpot Client ID associated to a user'
+  python:
+    workdir: .
+    requirements-check:
+      - check-command:
+          linux: |
+            pip3 install boto3
+          mac: |
+            pip3 install boto3
+          windows: |
+            pip3 install boto3
+        info: "Pip3 is not installed!"
+    script: script.py
