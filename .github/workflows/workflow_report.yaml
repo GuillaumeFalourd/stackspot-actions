@@ -36,3 +36,5 @@ jobs:
         with:
           name: workflow-execution-report
           path: workflow_execution_report.csv
+
+      - uses: GuillaumeFalourd/git-commit-push@v1.3
