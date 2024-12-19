@@ -3,7 +3,7 @@ name: Workflow Execution Report
 on:
   workflow_dispatch: # Allows manual triggering of the workflow
 
-permissions: read-all
+permissions: write-all
 
 jobs:
   generate-report:
