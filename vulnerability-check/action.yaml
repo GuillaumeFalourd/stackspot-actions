@@ -1,0 +1,27 @@
+schema-version: v2
+kind: action
+metadata:
+  name: vulnerability-check
+  display-name: vulnerability-check
+  description: Action to check folder files vulnerabilities
+  version: 0.0.1
+spec:
+  type: python
+  docs:
+    pt-br: docs/pt-br/docs.md
+    en-us: docs/en-us/docs.md
+  repository: https://github.com/GuillaumeFalourd/stackspot-actions
+  inputs:
+    - label: StackSpot Client ID (in stackspot realm)
+      name: stk_client_id
+      type: text
+      required: true
+      help: 'The StackSpot Client ID associated to a user'
+    - label: StackSpot Client KEY (in stackspot realm)
+      name: stk_client_key
+      type: text
+      required: true
+      help: 'The StackSpot Client Key associated to a user'
+  python:
+    workdir: .
+    script: script.py

@@ -1,0 +1,38 @@
+schema-version: v1
+kind: action
+metadata:
+  name: create-github-secret
+  display-name: create-github-secret
+  description: Action to create a GitHub repository secret
+  version: 0.0.1
+spec:
+  type: python
+  about: docs/about.md
+  usage: docs/usage.md
+  release-notes: docs/release-notes.md
+  requirements: docs/requirements.md
+  implementation: docs/implementation.md
+  inputs:
+    - label: GitHub Token
+      name: stk_github_token
+      type: password
+      required: true
+      help: 'Inform a GitHub token or PAT'
+    - label: Repository name
+      name: stk_github_repository
+      type: text
+      required: true
+      help: 'Inform if you the repository name you want to create'
+    - label: New secret name
+      name: stk_github_secret_name
+      type: text
+      required: true
+      help: 'Inform the secret name to create'
+    - label: New secret value
+      name: stk_github_secret_value
+      type: password
+      required: true
+      help: 'Inform the secret value to create'
+  python:
+    workdir: .
+    script: script.py

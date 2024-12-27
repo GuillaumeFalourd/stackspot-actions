@@ -1,0 +1,133 @@
+name: Load test
+
+on:
+  workflow_dispatch:
+    inputs:
+        iteration:
+          required: true
+          type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+        csv_file: ${{ steps.csv_file.outputs.csv_file }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate CSV file
+        id: csv_file
+        run: |
+            cd reports
+            # Get the current date and time in the desired format
+            current_date=$(date +"%Y-%m-%d-%H-%M")
+
+            # Define the CSV file name
+            csv_file="${current_date}-result.csv"
+
+            # Create the CSV file and add the header row
+            echo "Test number,PR url,Files updated,Vulnerabilities" > "$csv_file"
+
+            # Print a success message
+            echo "CSV file '$csv_file' created successfully."
+
+            echo "csv_file=$csv_file" >> $GITHUB_OUTPUT
+        shell: bash
+      - uses: GuillaumeFalourd/git-commit-push@v1.3
+
+  iteration_setup:
+    runs-on: ubuntu-latest
+    outputs:
+        json: ${{ steps.json.outputs.json }}
+    steps:
+      - name: Generate Iteration Json 
+        id: json
+        run: |
+            if ! [[ "${{inputs.iteration}}" =~ ^[0-9]+$ ]] || [ "${{inputs.iteration}}" -le 0 ]; then
+                echo "Error: iteration input must be a positive integer."
+                exit 1
+            fi
+
+            # Start building the JSON list
+            json_list="["
+            for i in $(seq 1 ${{inputs.iteration}}); do
+            if [ "$i" -eq "${{inputs.iteration}}" ]; then
+                json_list+="$i"
+            else
+                json_list+="$i,"
+            fi
+            done
+            json_list+="]"
+
+            # Print the JSON list
+            echo "$json_list"
+
+            echo "json=$json_list" >> $GITHUB_OUTPUT
+        shell: bash
+
+  load-test:
+    needs: [setup, iteration_setup]
+    strategy:
+      matrix: 
+        iteration: ${{fromJson(needs.iteration_setup.outputs.json)}}
+      fail-fast: true
+      max-parallel: 1
+    uses: ./.github/workflows/reusable-container-check.yaml
+    secrets: inherit
+    permissions:
+      contents: write
+      pull-requests: write
+    with: 
+      path_file: reports/${{ needs.setup.outputs.csv_file }}
+      test_number: ${{ matrix.iteration }}
+
+  close_pr:
+    needs: [load-test]
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            if ! command -v gh &> /dev/null; then
+                echo "GitHub CLI (gh) is not installed. Please install it first."
+                exit 1
+            fi
+
+            # Check if the repository is provided as an argument
+            if [ -z "GuillaumeFalourd/stackspot-actions" ]; then
+                echo "Usage: $0 <repository>"
+                echo "Example: $0 owner/repo"
+                exit 1
+            fi
+
+            REPO=GuillaumeFalourd/stackspot-actions
+
+            # Fetch all open pull requests
+            echo "Fetching open pull requests for repository: $REPO"
+            OPEN_PRS=$(gh pr list --repo "$REPO" --state open --json number --jq '.[].number')
+
+            if [ -z "$OPEN_PRS" ]; then
+                echo "No open pull requests found in the repository."
+                exit 0
+            fi
+
+            # Loop through each pull request and close it
+            for PR_NUMBER in $OPEN_PRS; do
+                echo "Closing pull request #$PR_NUMBER..."
+                gh pr close "$PR_NUMBER" --repo "$REPO"
+                if [ $? -eq 0 ]; then
+                    echo "Pull request #$PR_NUMBER closed successfully."
+                else
+                    echo "Failed to close pull request #$PR_NUMBER."
+                fi
+            done
+
+            echo "All open pull requests have been processed."
+          shell: bash
+          env:
+            GH_TOKEN: ${{ github.token }}

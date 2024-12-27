@@ -1,0 +1,56 @@
+name: Close PRs
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  close_pr:
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            if ! command -v gh &> /dev/null; then
+                echo "GitHub CLI (gh) is not installed. Please install it first."
+                exit 1
+            fi
+
+            # Check if the repository is provided as an argument
+            if [ -z "GuillaumeFalourd/stackspot-actions" ]; then
+                echo "Usage: $0 <repository>"
+                echo "Example: $0 owner/repo"
+                exit 1
+            fi
+
+            REPO=GuillaumeFalourd/stackspot-actions
+
+            # Fetch all open pull requests
+            echo "Fetching open pull requests for repository: $REPO"
+            OPEN_PRS=$(gh pr list --repo "$REPO" --state open --json number --jq '.[].number')
+
+            if [ -z "$OPEN_PRS" ]; then
+                echo "No open pull requests found in the repository."
+                exit 0
+            fi
+
+            # Loop through each pull request and close it
+            for PR_NUMBER in $OPEN_PRS; do
+                echo "Closing pull request #$PR_NUMBER..."
+                gh pr close "$PR_NUMBER" --repo "$REPO"
+                if [ $? -eq 0 ]; then
+                    echo "Pull request #$PR_NUMBER closed successfully."
+                else
+                    echo "Failed to close pull request #$PR_NUMBER."
+                fi
+            done
+
+            echo "All open pull requests have been processed."
+          shell: bash
+          env:
+            GH_TOKEN: ${{ github.token }}

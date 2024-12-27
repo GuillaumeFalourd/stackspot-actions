@@ -1,0 +1,58 @@
+name: Container Check
+
+on:
+  # push:
+  schedule:
+    - cron: "0 1 * * MON-FRI" # Runs at 01:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  container-check:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4.2.1
+          with:  
+            fetch-depth: 0
+        - uses: stack-spot/stk-cli-action@v1.2
+          with:
+            client_id: ${{ secrets.STK_CLIENT_ID }}
+            client_key: ${{ secrets.STK_CLIENT_KEY }}
+            realm: stackspot    
+        - run: stk run action $GITHUB_WORKSPACE/container-check --stk_client_id '${{secrets.STK_CLIENT_ID}}' --stk_client_key '${{secrets.STK_CLIENT_KEY}}'
+          env:
+            FEATURES_LEVEL_LOG: debug
+
+        - name: Push changes and Open Pull Request
+          id: commit_push
+          run: |
+            if [[ `git status --porcelain` ]]; then
+                # Get the repository name from the GitHub context
+                repo_name=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)
+                # Generate a timestamp in the format YYYYMMDD-HHMMSS
+                timestamp=$(date +'%Y%m%d-%H%M%S')
+                # Create the branch name
+                BRANCH="stackspot-${repo_name}-${timestamp}"
+
+                git config --global user.name "stackspot[bot]"
+                git config --global user.email "stackspot[bot]@users.noreply.github.com"
+                git checkout -b $BRANCH
+                git add .
+                git commit -m "Update Dockerfile base image to fix vulnerabilities using StackSpot."
+                git push origin $BRANCH
+
+                # Create PR
+                gh pr create --base main --head $BRANCH --title "Fix Dockerfile vulnerabilities" --body "An automated PR which updates Docker base images to address vulnerabilities using StackSpot."
+            else
+                echo "WARNING: No changes were detected."
+            fi
+          shell: bash
+          env:
+            GH_TOKEN: ${{ github.token }}

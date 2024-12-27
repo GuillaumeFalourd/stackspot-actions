@@ -1,0 +1,7 @@
+Workflow Name,Total Executions,Successful Executions (%),Average Successful Execution Time (s)
+Close PRs,9,100.0,29.56
+Container Check,103,80.58,187.99
+Load test,45,33.33,1724.0
+Reusable Container Check,0,0.0,0.0
+Vulnerability Check,190,60.53,283.1
+Workflow Execution Report,3,33.33,31.0

@@ -1,0 +1,68 @@
+name: Reusable Container Check
+
+on:
+  workflow_call:
+    inputs:
+      path_file:
+        required: true
+        type: string
+      test_number:
+        required: true
+        type: string
+jobs:
+  container-check:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4.2.1
+          with:  
+            fetch-depth: 0
+        - uses: stack-spot/stk-cli-action@v1.2
+          with:
+            client_id: ${{ secrets.STK_CLIENT_ID }}
+            client_key: ${{ secrets.STK_CLIENT_KEY }}
+            realm: stackspot    
+        - name: Run container check action
+          id: container_check
+          run: stk run action $GITHUB_WORKSPACE/container-check --stk_client_id '${{secrets.STK_CLIENT_ID}}' --stk_client_key '${{secrets.STK_CLIENT_KEY}}'
+          env:
+            FEATURES_LEVEL_LOG: debug
+        - name: Open Pull Request
+          run: python pr_script.py
+          shell: bash
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+            GITHUB_WORKSPACE: ${{ github.workspace }}
+            GITHUB_REPOSITORY: GuillaumeFalourd/stackspot-actions
+            TEST_NUMBER: ${{ inputs.test_number }}
+            PATH_FILE: ${{ inputs.path_file }}
+            VULNERABILITIES: ${{ steps.container_check.outputs.vulnerabilities}}
+        - name: Push CSV file on main
+          run: |
+            # Display the current branch and status
+            git branch
+            git status
+
+            # Check if there are untracked or modified files
+            if [[ `git status --porcelain` ]]; then
+              # Add all changes (including untracked files) to the staging area
+              git add .
+
+              # Commit the changes with a meaningful message
+              git commit -m "Update reports/2024-12-03-18-41-result.csv with new data."
+
+              # Fetch the latest changes from the remote branch
+              git fetch origin main
+
+              # Pull the latest changes from the remote branch with rebase, resolving conflicts by favoring local changes
+              git pull --rebase --strategy-option=theirs origin main || {
+                echo "WARNING: Conflict detected. Resolving by favoring local changes."
+                git rebase --abort
+                git pull --strategy=ours origin main
+              }
+
+              # Push the changes to the remote branch
+              git push origin main --force-with-lease
+            else
+              echo "WARNING: No changes were detected."
+            fi
+          shell: bash
