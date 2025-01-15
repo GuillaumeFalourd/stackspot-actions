@@ -22,6 +22,11 @@ spec:
       type: password
       required: true
       help: 'Your AWS secret access key to access the account'
+    - label: AWS_SESSION_TOKEN
+      name: aws_session_token
+      type: password
+      required: true
+      help: 'Your AWS session token to access the account'
     - label: AWS_REGION
       name: aws_region
       type: text
