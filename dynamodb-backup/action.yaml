@@ -31,7 +31,12 @@ spec:
       name: dynamodb_table_name
       type: text
       required: true
-      help: 'The StackSpot Client ID associated to a user'
+      help: 'The AWS DynamoDB Table to backup'
+    - label: S3 Bucket Name
+      name: s3_bucket_name
+      type: text
+      required: true
+      help: 'The AWS S3 bucket to save the DynamoDB backup'
   python:
     workdir: .
     requirements-check:
