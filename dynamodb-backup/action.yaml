@@ -12,26 +12,6 @@ spec:
     en-us: docs/en-us/docs.md
   repository: https://github.com/GuillaumeFalourd/stackspot-actions
   inputs:
-    - label: AWS_ACCESS_KEY_ID
-      name: aws_access_key_id
-      type: password
-      required: true
-      help: 'Your AWS access key id to access the account'
-    - label: AWS_SECRET_ACCESS_KEY
-      name: aws_secret_access_key
-      type: password
-      required: true
-      help: 'Your AWS secret access key to access the account'
-    - label: AWS_SESSION_TOKEN
-      name: aws_session_token
-      type: password
-      required: true
-      help: 'Your AWS session token to access the account'
-    - label: AWS_REGION
-      name: aws_region
-      type: text
-      required: true
-      help: 'Your AWS Region'
     - label: DynamoDB Table Name
       name: dynamodb_table_name
       type: text
@@ -47,10 +27,10 @@ spec:
     requirements-check:
       - check-command:
           linux: |
-            pip3 install boto3
+            pip3 install boto3 requests
           mac: |
-            pip3 install boto3
+            pip3 install boto3 requests
           windows: |
-            pip3 install boto3
+            pip3 install boto3 requests
         info: "Pip3 is not installed!"
     script: script.py

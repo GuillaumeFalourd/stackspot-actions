@@ -1,19 +1,8 @@
 import boto3
 import time
+import os
+import requests
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError, ClientError
-
-def register_aws_credentials(aws_access_key_id, aws_secret_access_key, aws_session_token, aws_region):
-    """
-    Registers AWS credentials for the boto3 session.
-    """
-    print("Registering AWS credentials...")
-    boto3.setup_default_session(
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key,
-        aws_session_token = aws_session_token,
-        region_name=aws_region
-    )
-    print("AWS credentials registered successfully.")
 
 def initialize_dynamodb_client():
     """
@@ -68,8 +57,7 @@ def export_dynamodb_table_to_s3(dynamodb_client, table_name, s3_bucket_name, s3_
                 print("Export task completed successfully.")
                 break
             elif status == 'FAILED':
-                print("Export task failed. Please check the AWS Management Console for more details.")
-                return
+                raise RuntimeError("Export task failed. Please check the AWS Management Console for more details.")
             else:
                 print("Export task is still in progress. Retrying in 30 seconds...")
                 time.sleep(30)
@@ -77,8 +65,23 @@ def export_dynamodb_table_to_s3(dynamodb_client, table_name, s3_bucket_name, s3_
         print(f"Backup of table '{table_name}' has been successfully saved to S3 bucket '{s3_bucket_name}' with prefix '{s3_prefix}'.")
     except ClientError as e:
         print(f"ClientError occurred: {e.response['Error']['Message']}")
+        raise
     except Exception as e:
         print(f"An unexpected error occurred during the export process: {str(e)}")
+        raise
+
+def get_federation_token():
+    print("Getting federated token")
+    request_token = os.getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+    request_url = os.getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
+    header = {'Authorization': f'bearer {request_token}'}
+    try:
+        response = requests.get(url=f"{request_url}&audience=sts.amazonaws.com", headers=header, verify=False)
+        response.raise_for_status()
+        return response.json().get("token")
+    except Exception as e:
+        print(f"Error getting federated token: {str(e)}")
+        raise
 
 def run(metadata):
     """
@@ -89,27 +92,31 @@ def run(metadata):
         inputs = metadata.inputs
         table_name = inputs.get("dynamodb_table_name", "").strip()
         s3_bucket_name = inputs.get("s3_bucket_name", "").strip()
-        aws_access_key_id = inputs.get("aws_access_key_id", "").strip()
-        aws_secret_access_key = inputs.get("aws_secret_access_key", "").strip()
-        aws_session_token = inputs.get("aws_session_token", "").strip()
-        aws_region = inputs.get("aws_region", "").strip()
+        role_arn = os.getenv("ROLE_ARN")
 
-        # Hardcoded S3 prefix
+        # Assume role with web identity
+        sts_client = boto3.client('sts')
+        assumed_role = sts_client.assume_role_with_web_identity(
+            RoleArn=role_arn,
+            RoleSessionName="AssumeRoleSession",
+            WebIdentityToken=get_federation_token(),
+            DurationSeconds=3600,
+        )
+        credentials = assumed_role['Credentials']
+
+        # Initialize DynamoDB client with assumed role credentials
+        print("Initializing AWS clients...")
+        dynamodb_client = boto3.client(
+            'dynamodb',
+            aws_access_key_id=credentials['AccessKeyId'],
+            aws_secret_access_key=credentials['SecretAccessKey'],
+            aws_session_token=credentials['SessionToken']
+        )
+
+        # S3 prefix
         s3_prefix = "backups/dynamodb/"
 
-        print("Validating inputs...")
-        if not all([table_name, s3_bucket_name, aws_access_key_id, aws_secret_access_key, aws_region]):
-            raise ValueError("All input fields (table name, S3 bucket name, AWS credentials, and region) are required.")
-        print("All inputs are valid.")
-
-        # Register AWS credentials
-        register_aws_credentials(aws_access_key_id, aws_secret_access_key, aws_session_token, aws_region)
-
-        # Initialize DynamoDB client
-        print("Initializing AWS clients...")
-        dynamodb_client = initialize_dynamodb_client()
-
-        # Directly proceed with the export operation
+        # Proceed with the export operation
         print("Proceeding with the export process...")
         export_dynamodb_table_to_s3(dynamodb_client, table_name, s3_bucket_name, s3_prefix)
 
