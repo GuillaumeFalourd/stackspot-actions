@@ -1,6 +1,6 @@
 FROM amazon/aws-cli:2.17.64 AS awscli-installer
 
-FROM amazoncorretto:21.0.3-al2023 AS builder
+FROM amazoncorretto:21.0.5-al2023 AS builder
 WORKDIR /opt/app
 
 COPY src src
@@ -10,7 +10,7 @@ COPY .mvn .mvn
 
 RUN chmod +x mvnw && ./mvnw clean package -DskipTests --no-transfer-progress
 
-FROM amazoncorretto:21.0.4-al2023-headless AS runtime
+FROM amazoncorretto:21.0.5-al2023-headless AS runtime
 
 COPY src src
 COPY pom.xml pom.xml
